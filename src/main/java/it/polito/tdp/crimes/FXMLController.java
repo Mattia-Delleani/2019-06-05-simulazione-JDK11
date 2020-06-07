@@ -5,6 +5,7 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.crimes.model.Model;
@@ -25,13 +26,13 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -47,11 +48,32 @@ public class FXMLController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
+    	
+    	txtResult.clear();
+    	Integer anno = boxAnno.getValue();
+    	
+    	if(anno ==null) {
+    		txtResult.setText("Selezionare un anno");
+    	}else {
+    		
+    		this.model.creaGrafo(anno);
+    		txtResult.appendText("Grafo creato. Vertici: "+this.model.getGrafo().vertexSet().size() +", archi: "+this.model.getGrafo().edgeSet().size());
+    		
+    		txtResult.appendText("\n"+this.model.getLista());
+    		
+    	}
+    	
 
     }
 
     @FXML
     void doSimula(ActionEvent event) {
+    	
+    	LocalDate ld = LocalDate.of(boxAnno.getValue(), boxMese.getValue(), boxGiorno.getValue());
+    	int k = Integer.parseInt(txtN.getText());
+    	
+    	this.model.simula(ld, k);
+    	
 
     }
 
@@ -69,5 +91,6 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	boxAnno.getItems().addAll(this.model.getYear());
     }
 }
